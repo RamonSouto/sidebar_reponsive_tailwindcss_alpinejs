@@ -1,4 +1,4 @@
-<!-- 24:38 -->
+<!-- 35:42 -->
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -6,25 +6,30 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Menu Resposivo com Tailwindcss</title>
-        <link rel="stylesheet" href="./assets/css/pincipal.css">
+        <link rel="stylesheet" href="./assets/css/principal.css">
+        <script type="module" src="/node_modules/alpinejs/dist/cdn.js"></script>
     </head>
     <style>
         [x-cloak]{
             display: none;
         }
     </style>
-    <script type="module" src="/node_modules/alpinejs/dist/cdn.js"></script>
-    <body x-data class="h-screen mx-auto antialiased flex justify-between">
+    
+    <body x-data
+          class="h-screen mx-auto antialiased flex justify-between">
+
+
         <div class="h-screen bg-gray-900 transition-all duration-300 space-y-2 fixed sm:relative"
-             x-bind:class="{ 'w-64': $store.sidebar.full, 'w-64 sm:w-20':!$store.sidebar.full, 'top-0 left-0':$store.sidebar.navOpen, 'top-0 -left-64 sm:left-0':!$store.sidebar.full}"
+             x-bind:class="{'w-64': $store.sidebar.full, 'w-64 sm:w-20':!$store.sidebar.full, 'top-0 left-0':$store.sidebar.navOpen, 'top-0 -left-64 sm:left-0':!$store.sidebar.full}">
              
             <!-- LOGOMARCA NOME DA EMPRESA -->
             <h1 class="text-white font-black py-4"
                 x-bind:class="$store.sidebar.full ? 'text-2xl px-4 text-center' : 'text-xl px-4 xm:px-2'">LOGO</h1>
+            
 
             <div class="px-4 space-y-2">
 
-                <!-- Sidebar Toggle -->
+                <!-- Sidebar Toggle-->
                 <button @click="$store.sidebar.full = !$store.sidebar.full" 
                         class="hidden sm:block focus:outline-none absolute p-1 -right-3 top-10 bg-gray-900 rounded-full shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -38,10 +43,14 @@
                     </svg>
 
                 </button>
+                
 
-                <!-- Home -->
-                <div class="relative flex items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
-                     x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }">
+                <!-- Home  -->
+                <div x-data="$store.sidebar"
+                     @click="$store.sidebar.active = 'home'"
+                     class="relative flex items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
+                     x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center' : !$store.sidebar.full, 'text-gray-100 bg-gray-400' : $store.sidebar.active=='home'}"
+                     x-bin>
                     <svg xmlns="http://www.w3.org/2000/svg"
                          class="h-6 w-6"
                          fill="none"
@@ -56,9 +65,12 @@
                 </div>
 
                 <!-- Audience -->
-                <div class="relative">
-                    <div class="flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
-                         x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }">
+                <div x-data="dropdown"
+                     class="relative">
+
+                    <div @click="toggle('audience')"
+                         class="flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
+                         x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full, 'text-gray-200 bg-gray-800':$store.sidebar.active == 'audience', 'text-gray-400':$store.sidebar.active != 'audience'}">
                         <div class="relative flex space-x-2 items-center">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                  class="h-6 w-6"
@@ -82,9 +94,11 @@
                                   clip-rule="evenodd" />
                         </svg>
                     </div>
-
                     <!-- Itens DropDown -->
-                    <div class="text-gray-400 space-y-3">
+                    <div x-show="open"
+                         @click.outside="open=false"
+                         x-bind:class="$store.sidebar.full ? expandedClass : shrinkedClass"
+                         class="text-gray-400 space-y-3">
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 1</h1>
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 2</h1>
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 3</h1>
@@ -94,8 +108,9 @@
                 
 
                 <!-- Posts -->
-                <div class="relative flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
-                     x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }">
+                <div @click="$store.sidebar.active = 'posts'"
+                     class="relative flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
+                     x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full, 'text-gray-200 bg-gray-800':$store.sidebar.active == 'posts', 'text-gray-400':$store.sidebar.active != 'posts'}">
                     <div class="flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              class="h-6 w-6"
@@ -114,8 +129,8 @@
                 </div>
 
                 <!-- Schedules -->
-                <div class="relative flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
-                     x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }">
+                <div @click="$store.sidebar.active = 'schedules'" class="relative flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
+                     x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full, 'text-gray-200 bg-gray-800':$store.sidebar.active == 'schedules', 'text-gray-400':$store.sidebar.active != 'schedules' }">
                     <div class="flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              class="h-6 w-6"
@@ -129,7 +144,8 @@
                         </svg>
                         <h1 x-bind:class="$store.sidebar.full ? '' : 'hidden'">Schedules</h1>
                     </div>
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-2"
+                         x-bind:class="$store.sidebar.full ? '' : 'hidden'">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              class="h-6 w-6"
                              fill="none"
@@ -145,9 +161,11 @@
                 </div>
 
                 <!-- Income -->
-                <div class="relative">
-                    <div class="flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
-                         x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }">
+                <div x-data="dropdown"
+                     class="relative">
+                    <div @click="toggle('income')"
+                         class="flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
+                         x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full, 'text-gray-200 bg-gray-800':$store.sidebar.active == 'income', 'text-gray-400':$store.sidebar.active != 'income' }">
                         <div class="relative flex space-x-2 items-center">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                  class="h-6 w-6"
@@ -165,7 +183,7 @@
                             </svg>
                             <h1 x-bind:class="$store.sidebar.full ? '' : 'hidden'">Income</h1>
                         </div>
-                        <svg x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }"
+                        <svg x-bind:class="$store.sidebar.full ? '':'hidden'"
                              xmlns="http://www.w3.org/2000/svg"
                              class="h-4 w-4"
                              viewBox="0 0 20 20"
@@ -177,7 +195,10 @@
                     </div>
 
                     <!-- Itens DropDown -->
-                    <div class="text-gray-400 space-y-3">
+                    <div x-show="open"
+                         @click.outside="open=false"
+                         x-bind:class="$store.sidebar.full ? expandedClass : shrinkedClass"
+                         class="text-gray-400 space-y-3">
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 1</h1>
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 2</h1>
                         <!-- Sub DropDown -->
@@ -206,9 +227,11 @@
                 </div>
 
                 <!-- Promote -->
-                <div class="relative">
-                    <div class="flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
-                         x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }">
+                <div x-data="dropdown"
+                     class="relative">
+                    <div @click="toggle('promote')"
+                         class="flex justify-between items-center text-gray-400 hover:text-gray-200 hover:bg-gray-800 space-x-2 rounded-md p-2 cursor-pointer"
+                         x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full, 'text-gray-200 bg-gray-800':$store.sidebar.active == 'promote', 'text-gray-400':$store.sidebar.active != 'promote' }">
                         <div class="relative flex space-x-2 items-center">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                  class="h-6 w-6"
@@ -222,7 +245,7 @@
                             </svg>
                             <h1 x-bind:class="$store.sidebar.full ? '' : 'hidden'">Promote</h1>
                         </div>
-                        <svg x-bind:class="{'justify-start' : $store.sidebar.full, 'sm:justify-center':!$store.sidebar.full }"
+                        <svg x-bind:class="$store.sidebar.full ? '':'hidden'"
                              xmlns="http://www.w3.org/2000/svg"
                              class="h-4 w-4"
                              viewBox="0 0 20 20"
@@ -234,7 +257,10 @@
                     </div>
 
                     <!-- Itens DropDown -->
-                    <div class="text-gray-400 space-y-3">
+                    <div x-show="open"
+                         @click.outside="open=false"
+                         x-bind:class="$store.sidebar.full ? expandedClass : shrinkedClass"
+                         class="text-gray-400 space-y-3">
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 1</h1>
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 2</h1>
                         <h1 class="hover:text-gray-200 cursor-pointer">Item 3</h1>
